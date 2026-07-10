@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(tlc)
+target_compile_options(tlc PRIVATE
+  -Wall -Wextra -Wpedantic -Werror
+)
+
 target_sources(tlc PRIVATE
   src/main.cpp
 
