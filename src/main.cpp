@@ -17,11 +17,20 @@
   */
 
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <iostream>
+#include <print>
 #include <ranges>
 #include <sstream>
+#include <string>
+#include <utility>
+#include <variant>
 
+#include "core/ast/declarations.hpp"
+#include "core/ast/expressions.hpp"
+#include "core/ast/statements.hpp"
+#include "core/ast/types.hpp"
 #include "core/lex/lexer.hpp"
 #include "core/parse/parser.hpp"
 #include "util/overloaded.hpp"

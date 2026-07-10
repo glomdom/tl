@@ -42,7 +42,6 @@ IndentCaseLabels: true
 InsertNewlineAtEOF: true
 KeepEmptyLines: 
   AtStartOfBlock: true
-  AtEndOfBlock: true
   AtStartOfFile: true
 MacroBlockBegin: ''
 MacroBlockEnd: ''
