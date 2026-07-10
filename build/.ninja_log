@@ -1,0 +1,7 @@
+# ninja log v7
+11	246	8048920286672365	CMakeFiles/tlc.dir/src/main.cpp.obj.ddi	d1eb1be5cc158951
+246	284	8048920289362627	CMakeFiles/tlc.dir/CXX.dd	6b88e509693d932d
+246	284	8048920289362627	CMakeFiles/tlc.dir/CXXModules.json	6b88e509693d932d
+246	284	8048920289362627	CMakeFiles/tlc.dir/src/main.cpp.obj.modmap	6b88e509693d932d
+289	1077	8048920289450613	CMakeFiles/tlc.dir/src/main.cpp.obj	9360ccf7b8889b26
+1080	1178	8048920297359491	tlc.exe	f5cb7d73b6c04a0c
