@@ -68,7 +68,7 @@ constexpr std::string_view to_view(const TokenType type) {
     case TokenType::EndOfFile: return "endoffile";
   }
 
-  return "<invalid>";
+  return "<invalid TokenType>";
 }
 
 } // namespace tlc::core
