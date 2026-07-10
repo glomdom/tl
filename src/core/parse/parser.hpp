@@ -35,13 +35,13 @@ public:
 
 private:
   [[nodiscard]] const Token& peek() const { return _tokens[_pos]; }
-  [[nodiscard]] const Token& peekNext() const { return _tokens[_pos + 1]; }
+  [[nodiscard]] const Token& peek_next() const { return _tokens[_pos + 1]; }
   const Token& advance() { return _tokens[_pos++]; }
 
-  [[nodiscard]] bool atEnd() const { return check(TokenType::EndOfFile); }
+  [[nodiscard]] bool at_end() const { return check(TokenType::EndOfFile); }
   [[nodiscard]] bool check(const TokenType t) const { return peek().type == t; }
-  [[nodiscard]] bool checkNext(const TokenType t) const { return peekNext().type == t; }
-  [[nodiscard]] bool checkOperator() const { return check(TokenType::Star); }
+  [[nodiscard]] bool check_next(const TokenType t) const { return peek_next().type == t; }
+  [[nodiscard]] bool check_operator() const { return check(TokenType::Star); }
 
   [[nodiscard]] bool match(const TokenType t) {
     if (check(t)) {

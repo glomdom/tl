@@ -74,7 +74,7 @@ ast::statements::StatementPointer Parser::parse_statement() {
     return std::make_unique<ast::statements::Statement>(ast::statements::ReturnStatement{std::move(returnExpression)});
   }
 
-  if (check(TokenType::Identifier) && checkNext(TokenType::LeftParenthesis)) {
+  if (check(TokenType::Identifier) && check_next(TokenType::LeftParenthesis)) {
     const auto calleeName = advance();
     expect(TokenType::LeftParenthesis);
 
@@ -112,7 +112,7 @@ ast::statements::StatementPointer Parser::parse_statement() {
 ast::expressions::ExpressionPointer Parser::parse_expression() {
   auto left = parse_primary();
 
-  while (checkOperator()) {
+  while (check_operator()) {
     advance(); // operator
 
     auto right = parse_primary();
