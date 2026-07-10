@@ -19,7 +19,21 @@
 #include "parser.hpp"
 
 #include <charconv>
-#include <iostream>
+#include <cstdint>
+#include <format>
+#include <memory>
+#include <optional>
+#include <print>
+#include <system_error>
+#include <utility>
+#include <vector>
+
+#include "core/token_type.hpp"
+#include "core/ast/declarations.hpp"
+#include "core/ast/expressions.hpp"
+#include "core/ast/statements.hpp"
+#include "core/ast/types.hpp"
+#include "core/parse/error.hpp"
 
 namespace tlc::core::parse {
 

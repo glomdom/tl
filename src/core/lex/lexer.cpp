@@ -18,7 +18,11 @@
 
 #include "lexer.hpp"
 
-#include <iostream>
+#include <cstddef>
+#include <vector>
+
+#include "core/token.hpp"
+#include "core/token_type.hpp"
 
 namespace {
 
