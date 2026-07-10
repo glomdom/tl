@@ -36,7 +36,10 @@ enum class TokenType {
   Semicolon,
   Comma,
 
+  Plus,
+  Minus,
   Star,
+  Slash,
 
   Identifier,
   Number,
@@ -59,7 +62,10 @@ constexpr std::string_view to_view(const TokenType type) {
     case TokenType::Semicolon: return "semicolon";
     case TokenType::Comma: return "comma";
 
+    case TokenType::Plus: return "plus";
+    case TokenType::Minus: return "minus";
     case TokenType::Star: return "star";
+    case TokenType::Slash: return "slash";
 
     case TokenType::Identifier: return "identifier";
     case TokenType::Number: return "number";

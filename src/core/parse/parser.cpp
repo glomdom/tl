@@ -127,12 +127,21 @@ ast::expressions::ExpressionPointer Parser::parse_expression() {
   auto left = parse_primary();
 
   while (check_operator()) {
-    advance(); // operator
+    const auto operatorToken = advance(); // operator
+
+    BinaryExpressionOperation operation;
+    if (operatorToken.lexeme == "+") operation = BinaryExpressionOperation::Addition;
+    else if (operatorToken.lexeme == "-") operation = BinaryExpressionOperation::Subtraction;
+    else if (operatorToken.lexeme == "*") operation = BinaryExpressionOperation::Multiplication;
+    else if (operatorToken.lexeme == "/") operation = BinaryExpressionOperation::Division;
+    else {
+      throw parse_exception{std::format("invalid operator {}", operatorToken.lexeme), operatorToken.line, operatorToken.column};
+    }
 
     auto right = parse_primary();
     left = std::make_unique<ast::expressions::Expression>(ast::expressions::BinaryExpression{
       .left = std::move(left),
-      .op = ast::expressions::BinaryExpressionOperation::Multiplication,
+      .op = operation,
       .right = std::move(right),
     });
   }

@@ -50,8 +50,8 @@ enum class BinaryExpressionOperation {
   Division,
   Multiplication,
   Power,
-  Plus,
-  Minus,
+  Addition,
+  Subtraction,
 };
 
 struct BinaryExpression {
@@ -67,7 +67,10 @@ struct CallExpression {
 
 constexpr std::string_view to_view(const BinaryExpressionOperation op) {
   switch (op) {
+    case BinaryExpressionOperation::Addition: return "+";
+    case BinaryExpressionOperation::Subtraction: return "-";
     case BinaryExpressionOperation::Multiplication: return "*";
+    case BinaryExpressionOperation::Division: return "/";
 
     default: return "<unhandled BinaryExpressionOperation to_view>";
   }

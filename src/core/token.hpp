@@ -28,8 +28,7 @@ struct Token {
   TokenType type;
   std::string_view lexeme;
 
-  int line;
-  int column;
+  int line, column;
 };
 
 } // namespace tlc::core

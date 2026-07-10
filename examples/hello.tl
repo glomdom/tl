@@ -2,8 +2,8 @@
 // toy language
 //
 
-fn double(x: i32) -> i32 {
-    return x * 2;
+fn double_and_add_one(x: i32) -> i32 {
+    return x + 1 * 2;
 }
 
 fn main(argc: i32) -> i32 {

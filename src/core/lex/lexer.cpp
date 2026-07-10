@@ -126,6 +126,7 @@ void Lexer::scan_punctuation() {
         _tokens.push_back(Token{TokenType::RightArrow, "->", startLine, startCol});
       } else {
         advance();
+        _tokens.push_back(Token{TokenType::Minus, "-", startLine, startCol});
       }
 
       break;
@@ -180,9 +181,23 @@ void Lexer::scan_punctuation() {
       break;
     }
 
+    case '+': {
+      advance();
+      _tokens.push_back(Token{TokenType::Plus, "+", startLine, startCol});
+
+      break;
+    }
+
     case '*': {
       advance();
       _tokens.push_back(Token{TokenType::Star, "*", startLine, startCol});
+
+      break;
+    }
+
+    case '/': {
+      advance();
+      _tokens.push_back(Token{TokenType::Slash, "/", startLine, startCol});
 
       break;
     }

@@ -41,7 +41,7 @@ private:
   [[nodiscard]] bool at_end() const { return check(TokenType::EndOfFile); }
   [[nodiscard]] bool check(const TokenType t) const { return peek().type == t; }
   [[nodiscard]] bool check_next(const TokenType t) const { return peek_next().type == t; }
-  [[nodiscard]] bool check_operator() const { return check(TokenType::Star); }
+  [[nodiscard]] bool check_operator() const { return check(TokenType::Plus) || check(TokenType::Minus) || check(TokenType::Slash) || check(TokenType::Star); }
 
   [[nodiscard]] bool match(const TokenType t) {
     if (check(t)) {
