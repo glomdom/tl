@@ -257,7 +257,7 @@ void Lexer::scan_identifier() {
   const std::string_view lexeme = _text.substr(start, _pos - start);
 
   auto type = TokenType::Identifier;
-  if (lexeme == "fn") {
+  if (lexeme == "func") {
     type = TokenType::Function;
   } else if (lexeme == "return") {
     type = TokenType::Return;
