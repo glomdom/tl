@@ -20,6 +20,7 @@
 #pragma once
 
 #include <print>
+#include <unordered_map>
 
 #include "error.hpp"
 #include "core/token.hpp"
@@ -63,7 +64,7 @@ private:
 
   ast::declarations::FunctionDeclaration parse_function_declaration();
   ast::statements::StatementPointer parse_statement();
-  ast::expressions::ExpressionPointer parse_expression();
+  ast::expressions::ExpressionPointer parse_expression(std::int32_t minBindingPower = 0);
   ast::expressions::ExpressionPointer parse_primary();
   ast::declarations::Block parse_block();
 
@@ -73,6 +74,14 @@ private:
 private:
   std::vector<Token> _tokens;
   std::size_t _pos{};
+
+  std::unordered_map<BinaryExpressionOperation, std::int32_t> _bindingPowers = {
+    {BinaryExpressionOperation::Addition, 10},
+    {BinaryExpressionOperation::Subtraction, 10},
+    {BinaryExpressionOperation::Multiplication, 20},
+    {BinaryExpressionOperation::Division, 20},
+    {BinaryExpressionOperation::Power, 30},
+  };
 };
 
 } // namespace tlc::core::parse

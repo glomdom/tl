@@ -123,22 +123,30 @@ ast::statements::StatementPointer Parser::parse_statement() {
   throw parse_exception{std::format("failed to parse statement, last token: {}", peek().type), peek().line, peek().column};
 }
 
-ast::expressions::ExpressionPointer Parser::parse_expression() {
+ast::expressions::ExpressionPointer Parser::parse_expression(std::int32_t minBindingPower) {
   auto left = parse_primary();
 
   while (check_operator()) {
-    const auto operatorToken = advance(); // operator
+    const auto operatorToken = peek();
+    const auto lexeme = operatorToken.lexeme;
 
     BinaryExpressionOperation operation;
-    if (operatorToken.lexeme == "+") operation = BinaryExpressionOperation::Addition;
-    else if (operatorToken.lexeme == "-") operation = BinaryExpressionOperation::Subtraction;
-    else if (operatorToken.lexeme == "*") operation = BinaryExpressionOperation::Multiplication;
-    else if (operatorToken.lexeme == "/") operation = BinaryExpressionOperation::Division;
+    if (lexeme == "+") operation = BinaryExpressionOperation::Addition;
+    else if (lexeme == "-") operation = BinaryExpressionOperation::Subtraction;
+    else if (lexeme == "*") operation = BinaryExpressionOperation::Multiplication;
+    else if (lexeme == "/") operation = BinaryExpressionOperation::Division;
     else {
       throw parse_exception{std::format("invalid operator {}", operatorToken.lexeme), operatorToken.line, operatorToken.column};
     }
 
-    auto right = parse_primary();
+    const auto bindingPower = _bindingPowers[operation];
+    if (bindingPower < minBindingPower) {
+      break;
+    }
+
+    advance(); // operator
+
+    auto right = parse_expression(bindingPower + 1);
     left = std::make_unique<ast::expressions::Expression>(ast::expressions::BinaryExpression{
       .left = std::move(left),
       .op = operation,

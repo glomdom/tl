@@ -47,11 +47,11 @@ struct IdentifierExpression {
 };
 
 enum class BinaryExpressionOperation {
-  Division,
-  Multiplication,
-  Power,
   Addition,
   Subtraction,
+  Multiplication,
+  Division,
+  Power,
 };
 
 struct BinaryExpression {
