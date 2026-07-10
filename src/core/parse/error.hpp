@@ -24,16 +24,18 @@
 
 namespace tlc::core::parse {
 
-struct ParseError : std::exception {
-  std::string message;
-  int line{}, column{};
-
-  explicit ParseError() = default;
-  explicit ParseError(std::string message, const int line, const int column) : message{std::move(message)}, line{line}, column{column} {}
+class parse_exception : std::exception {
+public:
+  explicit parse_exception() = default;
+  explicit parse_exception(std::string message, const int line, const int column) : message{std::move(message)}, line{line}, column{column} {}
 
   [[nodiscard]] const char* what() const noexcept override {
     return message.c_str();
   }
+
+public:
+  std::string message;
+  int line{}, column{};
 };
 
 } // namespace tlc::core::parse

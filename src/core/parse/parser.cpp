@@ -35,7 +35,7 @@ std::optional<std::vector<ast::declarations::Declaration>> Parser::parse() {
 
         std::println("unhandled token {}", unhandled.type);
       }
-    } catch (const ParseError& e) {
+    } catch (const parse_exception& e) {
       std::println("error: {} at {}:{}", e.message, e.line, e.column);
 
       return std::nullopt;
@@ -106,7 +106,7 @@ ast::statements::StatementPointer Parser::parse_statement() {
     );
   }
 
-  throw ParseError{std::format("failed to parse statement, last token: {}", peek().type), peek().line, peek().column};
+  throw parse_exception{std::format("failed to parse statement, last token: {}", peek().type), peek().line, peek().column};
 }
 
 ast::expressions::ExpressionPointer Parser::parse_expression() {
@@ -141,7 +141,7 @@ ast::expressions::ExpressionPointer Parser::parse_primary() {
     std::uint64_t val;
     auto [ptr, ec] = std::from_chars(token.lexeme.data(), token.lexeme.data() + token.lexeme.size(), val);
     if (ec != std::errc{}) {
-      throw ParseError{std::format("unable to parse number {}", token.lexeme), token.line, token.column};
+      throw parse_exception{std::format("unable to parse number {}", token.lexeme), token.line, token.column};
     }
 
     return std::make_unique<ast::expressions::Expression>(
@@ -157,7 +157,7 @@ ast::expressions::ExpressionPointer Parser::parse_primary() {
     );
   }
 
-  throw ParseError{std::format("expected expression, got {}", peek().type), peek().line, peek().column};
+  throw parse_exception{std::format("expected expression, got {}", peek().type), peek().line, peek().column};
 }
 
 ast::declarations::Block Parser::parse_block() {

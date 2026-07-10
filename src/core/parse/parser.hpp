@@ -58,7 +58,7 @@ private:
       return advance();
     }
 
-    throw ParseError{std::format("expected {}, but got {}", t, peek().type), peek().line, peek().column};
+    throw parse_exception{std::format("expected {}, but got {}", t, peek().type), peek().line, peek().column};
   }
 
   ast::declarations::FunctionDeclaration parse_function_declaration();
