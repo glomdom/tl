@@ -46,6 +46,7 @@ std::vector<Token> Lexer::tokenize() {
   const std::size_t textSize = _text.size();
 
   while (_pos < textSize) {
+    skip_whitespace();
     skip_trivia();
 
     if (_pos >= textSize) {
@@ -96,16 +97,25 @@ char Lexer::peek_next(std::size_t amount) const {
 void Lexer::skip_trivia() {
   while (true) {
     const char c = peek();
+    if (c == '/' && peek_next() == '/') {
+      while (peek() != '\n' && peek() != '\0') {
+        advance();
+      }
+    } else {
+      return;
+    }
+  }
+}
+
+void Lexer::skip_whitespace() {
+  while (true) {
+    const char c = peek();
     if (c == ' ' || c == '\t' || c == '\r') {
       advance();
     } else if (c == '\n') {
       _pos += 1;
       _line += 1;
       _col = 1;
-    } else if (c == '/' && peek_next() == '/') {
-      while (peek() != '\n' && peek() != '\0') {
-        advance();
-      }
     } else {
       return;
     }

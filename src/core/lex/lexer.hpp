@@ -37,6 +37,7 @@ private:
 
   char advance();
   void skip_trivia();
+  void skip_whitespace();
   void scan_punctuation();
   void scan_string();
   void scan_identifier();
