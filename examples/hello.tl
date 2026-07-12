@@ -7,7 +7,7 @@ func double_and_add_one(x: i32) -> i32 {
 }
 
 func main(argc: i32) -> i32 {
-    println("Hello, world!");
+//    println("Hello, world!");
 
     return 0;
 }

@@ -30,19 +30,33 @@
 #include "core/lex/lexer.hpp"
 #include "core/parse/parser.hpp"
 #include "core/visitors/debug.hpp"
+#include <CLI/CLI.hpp>
 
 namespace fs = std::filesystem;
 
 using namespace tlc::core;
 
 int main(int argc, char* argv[]) {
-  if (argc < 2) {
-    std::cout << "Usage: tlc <file>" << '\n';
+  CLI::App app{"A toy language with a riscv64 backend"};
 
-    return -1;
+  bool dumpTokens{false};
+  bool dumpAST{false};
+  std::string inputPath;
+
+  app.add_flag("--dump-tokens", dumpTokens, "Prints the tokens created by the lexer");
+  app.add_flag("--dump-ast", dumpAST, "Prints the AST created by the parser");
+
+  app.add_option("input", inputPath, "The file to compile");
+
+  CLI11_PARSE(app, argc, argv);
+
+  fs::path inputFile = inputPath;
+  if (!exists(inputFile)) {
+    app.exit(CLI::FileError{"input file was not found", -2});
+
+    return -2;
   }
 
-  fs::path inputFile = argv[1];
   std::ifstream in(inputFile, std::ios::binary);
   std::ostringstream ss;
   ss << in.rdbuf();
@@ -50,8 +64,10 @@ int main(int argc, char* argv[]) {
   auto lexer = lex::Lexer{ss.view()};
   auto tokens = lexer.tokenize();
 
-  for (const auto& [type, lexeme, line, column] : tokens) {
-    std::println("{} ({}) [{}:{}]", lexeme, type, line, column);
+  if (dumpTokens) {
+    for (const auto& [type, lexeme, line, column] : tokens) {
+      std::println("{} ({}) [{}:{}]", lexeme, type, line, column);
+    }
   }
 
   auto parser = parse::Parser{std::move(tokens)};
@@ -62,8 +78,10 @@ int main(int argc, char* argv[]) {
     return -2;
   }
 
-  for (const auto& decl : *declarations) {
-    std::println("{}", visitors::debug::visit_declaration(decl, 0));
+  if (dumpAST) {
+    for (const auto& decl : *declarations) {
+      std::println("{}", visitors::debug::visit_declaration(decl, 0));
+    }
   }
 
   return 0;
