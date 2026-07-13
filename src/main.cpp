@@ -43,21 +43,19 @@ int main(int argc, char* argv[]) {
   bool dumpAST{false};
   std::string inputPath;
 
-  app.add_flag("--dump-tokens", dumpTokens, "Prints the tokens created by the lexer");
-  app.add_flag("--dump-ast", dumpAST, "Prints the AST created by the parser");
+  app.add_flag("--dump-tokens", dumpTokens, "Prints the tokens created by the lexer")
+    ->group("DEBUG");
 
-  app.add_option("input", inputPath, "The file to compile");
+  app.add_flag("--dump-ast", dumpAST, "Prints the AST created by the parser")
+    ->group("DEBUG");
+
+  app.add_option("input", inputPath, "The file to compile")
+    ->required()
+    ->check(CLI::ExistingFile);
 
   CLI11_PARSE(app, argc, argv);
 
-  fs::path inputFile = inputPath;
-  if (!exists(inputFile)) {
-    app.exit(CLI::FileError{"input file was not found", -2});
-
-    return -2;
-  }
-
-  std::ifstream in(inputFile, std::ios::binary);
+  std::ifstream in(inputPath, std::ios::binary);
   std::ostringstream ss;
   ss << in.rdbuf();
 
