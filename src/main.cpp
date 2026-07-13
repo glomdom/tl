@@ -19,34 +19,30 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
-#include <iostream>
-#include <print>
 #include <ranges>
-#include <sstream>
 #include <string>
 #include <utility>
-#include <variant>
 
-#include "core/lex/lexer.hpp"
-#include "core/parse/parser.hpp"
-#include "core/visitors/debug.hpp"
 #include <CLI/CLI.hpp>
+
+#include "driver/driver.hpp"
+#include "driver/options.hpp"
 
 namespace fs = std::filesystem;
 
-using namespace tlc::core;
+using namespace tlc;
 
 int main(int argc, char* argv[]) {
   CLI::App app{"A toy language with a riscv64 backend"};
 
   bool dumpTokens{false};
-  bool dumpAST{false};
+  bool dumpAst{false};
   std::string inputPath;
 
   app.add_flag("--dump-tokens", dumpTokens, "Prints the tokens created by the lexer")
     ->group("DEBUG");
 
-  app.add_flag("--dump-ast", dumpAST, "Prints the AST created by the parser")
+  app.add_flag("--dump-ast", dumpAst, "Prints the AST created by the parser")
     ->group("DEBUG");
 
   app.add_option("input", inputPath, "The file to compile")
@@ -55,31 +51,18 @@ int main(int argc, char* argv[]) {
 
   CLI11_PARSE(app, argc, argv);
 
-  std::ifstream in(inputPath, std::ios::binary);
-  std::ostringstream ss;
-  ss << in.rdbuf();
+  auto opts = driver::Options{
+    .dumpAst = dumpAst,
+    .dumpTokens = dumpTokens,
+    .inputFile = std::move(inputPath),
+  };
 
-  auto lexer = lex::Lexer{ss.view()};
-  auto tokens = lexer.tokenize();
+  auto driver = driver::Driver{std::move(opts)};
+  auto success = driver.run();
+  if (!success) {
+    // todo: report diagnostics
 
-  if (dumpTokens) {
-    for (const auto& [type, lexeme, line, column] : tokens) {
-      std::println("{} ({}) [{}:{}]", lexeme, type, line, column);
-    }
-  }
-
-  auto parser = parse::Parser{std::move(tokens)};
-  auto declarations = parser.parse();
-  if (!declarations) {
-    std::println("error occurred during parsing, exiting");
-
-    return -2;
-  }
-
-  if (dumpAST) {
-    for (const auto& decl : *declarations) {
-      std::println("{}", visitors::debug::visit_declaration(decl, 0));
-    }
+    return -1;
   }
 
   return 0;

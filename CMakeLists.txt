@@ -33,6 +33,8 @@ target_sources(tlc PRIVATE
 
   src/core/lex/lexer.cpp
   src/core/parse/parser.cpp
+
+  src/driver/driver.cpp
 )
 
 target_include_directories(tlc PRIVATE src )
