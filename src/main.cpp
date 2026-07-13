@@ -33,7 +33,7 @@ namespace fs = std::filesystem;
 using namespace tlc;
 
 int main(int argc, char* argv[]) {
-  CLI::App app{"A toy language with a riscv64 backend"};
+  CLI::App app{"A toy language"};
 
   bool dumpTokens{false};
   bool dumpAst{false};

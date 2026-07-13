@@ -21,7 +21,23 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2 cli11)
 
 enable_testing()
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(Catch)
+
+add_library(tlc_core)
+target_compile_options(tlc_core PRIVATE
+  -Wall -Wextra -Wpedantic -Werror
+)
+
+target_sources(tlc_core PRIVATE
+  src/core/diagnostics/diagnostics.cpp
+  src/core/lex/lexer.cpp
+  src/core/parse/parser.cpp
+
+  src/driver/driver.cpp
+)
+
+target_include_directories(tlc_core PUBLIC src)
 
 add_executable(tlc)
 target_compile_options(tlc PRIVATE
@@ -30,13 +46,8 @@ target_compile_options(tlc PRIVATE
 
 target_sources(tlc PRIVATE
   src/main.cpp
-
-  src/core/diagnostics/diagnostics.cpp
-  src/core/lex/lexer.cpp
-  src/core/parse/parser.cpp
-
-  src/driver/driver.cpp
 )
 
-target_include_directories(tlc PRIVATE src )
-target_link_libraries(tlc PRIVATE CLI11::CLI11)
+target_link_libraries(tlc PRIVATE CLI11::CLI11 tlc_core)
+
+add_subdirectory(tests)
