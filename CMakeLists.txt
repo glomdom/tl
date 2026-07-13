@@ -31,6 +31,7 @@ target_compile_options(tlc PRIVATE
 target_sources(tlc PRIVATE
   src/main.cpp
 
+  src/core/diagnostics/diagnostics.cpp
   src/core/lex/lexer.cpp
   src/core/parse/parser.cpp
 

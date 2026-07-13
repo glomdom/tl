@@ -37,7 +37,7 @@
 
 namespace tlc::core::parse {
 
-std::optional<std::vector<ast::declarations::Declaration>> Parser::parse() {
+std::vector<ast::declarations::Declaration> Parser::parse() {
   std::vector<ast::declarations::Declaration> declarations{};
 
   while (!check(TokenType::EndOfFile)) {
@@ -47,12 +47,12 @@ std::optional<std::vector<ast::declarations::Declaration>> Parser::parse() {
       } else {
         const auto unhandled = advance();
 
-        std::println("unhandled token {}", unhandled.type);
+        _diagnostics.note(std::format("unhandled token {}", unhandled.type), unhandled.line, unhandled.column);
       }
     } catch (const parse_exception& e) {
-      std::println("error: {} at {}:{}", e.message, e.line, e.column);
+      _diagnostics.error(e.message, e.line, e.column);
 
-      return std::nullopt;
+      return {};
     }
   }
   return declarations;

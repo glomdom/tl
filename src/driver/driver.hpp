@@ -5,6 +5,7 @@
 #include "options.hpp"
 #include "core/token.hpp"
 #include "core/ast/declarations.hpp"
+#include "core/diagnostics/diagnostics.hpp"
 
 namespace tlc::driver {
 
@@ -15,12 +16,13 @@ public:
   bool run();
 
 private:
-  bool read_source();
-  bool lex();
-  bool parse();
+  void read_source();
+  void lex();
+  void parse();
 
 private:
   Options _options;
+  core::diagnostics::Diagnostics _diagnostics;
 
   std::string _source;
   std::vector<core::Token> _tokens;

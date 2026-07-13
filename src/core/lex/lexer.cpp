@@ -233,7 +233,9 @@ void Lexer::scan_string() {
   }
 
   if (peek() == '\0') {
-    return; // todo: diagnostics
+    _diagnostics.error("Unterminated string", startLine, startCol);
+
+    return;
   }
 
   const std::string_view lexeme = _text.substr(start, _pos - start);

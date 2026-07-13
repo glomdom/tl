@@ -1,6 +1,7 @@
 ﻿#include "driver.hpp"
 
 #include <fstream>
+#include <functional>
 #include <sstream>
 
 #include "core/lex/lexer.hpp"
@@ -10,45 +11,45 @@
 namespace tlc::driver {
 
 bool Driver::run() {
-  if (!read_source()) {
-    return false;
-  }
+  auto run_phase = [this](const std::function<void()>& phase) {
+    phase();
 
-  if (!lex()) {
-    return false;
-  }
+    if (_diagnostics.has_error()) {
+      _diagnostics.render();
 
-  if (!parse()) {
-    return false;
-  }
+      return false;
+    }
 
-  return true;
+    return true;
+  };
+
+  return run_phase([this] { read_source(); }) &&
+         run_phase([this] { lex(); }) &&
+         run_phase([this] { parse(); });
 }
 
-bool Driver::read_source() {
+void Driver::read_source() {
   std::ifstream in(_options.inputFile, std::ios::binary);
   if (!in) {
-    // todo: add diagnostic
+    _diagnostics.error("I/O error", 0, 0);
 
-    return false;
+    return;
   }
 
   std::ostringstream ss;
   ss << in.rdbuf();
 
   if (in.bad()) {
-    // todo: add diagnostic
+    _diagnostics.error("Input stream is bad", 0, 0);
 
-    return false;
+    return;
   }
 
   _source = ss.str();
-
-  return true;
 }
 
-bool Driver::lex() {
-  auto lexer = core::lex::Lexer{_source};
+void Driver::lex() {
+  auto lexer = lex::Lexer{_source, _diagnostics};
   _tokens = lexer.tokenize();
 
   if (_options.dumpTokens) {
@@ -56,26 +57,19 @@ bool Driver::lex() {
       std::println("{} ({}) [{}:{}]", lexeme, type, line, column);
     }
   }
-
-  return true;
 }
 
-bool Driver::parse() {
-  auto parser = core::parse::Parser{std::move(_tokens)};
+void Driver::parse() {
+  auto parser = parse::Parser{std::move(_tokens), _diagnostics};
   auto declarations = parser.parse();
-  if (!declarations.has_value()) {
-    return false;
-  }
 
-  _ast = std::move(*declarations);
+  _ast = std::move(declarations);
 
   if (_options.dumpAst) {
     for (const auto& decl : _ast) {
       std::println("{}", visitors::debug::visit_declaration(decl, 0));
     }
   }
-
-  return true;
 }
 
 } // namespace tlc::driver

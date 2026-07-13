@@ -23,11 +23,13 @@
 #include <string_view>
 #include <vector>
 
+#include "core/diagnostics/diagnostics.hpp"
+
 namespace tlc::core::lex {
 
 class Lexer {
 public:
-  explicit Lexer(const std::string_view text) : _text{text} {}
+  explicit Lexer(const std::string_view text, diagnostics::Diagnostics& diagnostics) : _diagnostics{diagnostics}, _text{text} {}
 
   std::vector<Token> tokenize();
 
@@ -44,6 +46,8 @@ private:
   void scan_digit();
 
 private:
+  diagnostics::Diagnostics& _diagnostics;
+
   std::string_view _text;
   std::vector<Token> _tokens{};
 

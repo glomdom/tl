@@ -25,14 +25,15 @@
 #include "error.hpp"
 #include "core/token.hpp"
 #include "core/ast/declarations.hpp"
+#include "core/diagnostics/diagnostics.hpp"
 
 namespace tlc::core::parse {
 
 class Parser {
 public:
-  explicit Parser(std::vector<Token>&& tokens) : _tokens{std::move(tokens)} {}
+  explicit Parser(std::vector<Token>&& tokens, diagnostics::Diagnostics& diagnostics) : _diagnostics{diagnostics}, _tokens{std::move(tokens)} {}
 
-  std::optional<std::vector<ast::declarations::Declaration>> parse();
+  std::vector<ast::declarations::Declaration> parse();
 
 private:
   [[nodiscard]] const Token& peek() const { return _tokens[_pos]; }
@@ -72,6 +73,8 @@ private:
   std::vector<ast::declarations::Parameter> parse_parameter_list();
 
 private:
+  diagnostics::Diagnostics& _diagnostics;
+
   std::vector<Token> _tokens;
   std::size_t _pos{};
 
