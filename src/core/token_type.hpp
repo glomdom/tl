@@ -79,11 +79,9 @@ constexpr std::string_view to_view(const TokenType type) {
 
 } // namespace tlc::core
 
-using tlc::core::TokenType;
-
 template <>
-struct std::formatter<TokenType> : std::formatter<std::string_view> {
-  auto format(const TokenType type, auto& ctx) const {
-    return std::formatter<std::string_view>::format(to_view(type), ctx);
+struct std::formatter<tlc::core::TokenType> : std::formatter<std::string_view> {
+  auto format(const tlc::core::TokenType type, auto& ctx) const {
+    return std::formatter<std::string_view>::format(tlc::core::to_view(type), ctx);
   }
 };
