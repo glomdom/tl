@@ -49,7 +49,7 @@ private:
   diagnostics::Diagnostics& _diagnostics;
 
   std::string_view _text;
-  std::vector<Token> _tokens{};
+  std::vector<Token> _tokens;
 
   std::size_t _pos{};
   int _line{1};

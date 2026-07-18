@@ -65,7 +65,7 @@ std::vector<Token> Lexer::tokenize() {
     }
   }
 
-  _tokens.push_back(Token{TokenType::EndOfFile, "EOF", _line, _col});
+  _tokens.push_back(simple_token(TokenType::EndOfFile, "", _line, _col));
 
   return _tokens;
 }
@@ -133,10 +133,10 @@ void Lexer::scan_punctuation() {
         advance();
         advance();
 
-        _tokens.push_back(Token{TokenType::RightArrow, "->", startLine, startCol});
+        _tokens.push_back(simple_token(TokenType::RightArrow, "->", startLine, startCol));
       } else {
         advance();
-        _tokens.push_back(Token{TokenType::Minus, "-", startLine, startCol});
+        _tokens.push_back(simple_token(TokenType::Minus, "-", startLine, startCol));
       }
 
       break;
@@ -144,70 +144,70 @@ void Lexer::scan_punctuation() {
 
     case '(': {
       advance();
-      _tokens.push_back(Token{TokenType::LeftParenthesis, "(", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::LeftParenthesis, "(", startLine, startCol));
 
       break;
     }
 
     case ')': {
       advance();
-      _tokens.push_back(Token{TokenType::RightParenthesis, ")", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::RightParenthesis, ")", startLine, startCol));
 
       break;
     }
 
     case '{': {
       advance();
-      _tokens.push_back(Token{TokenType::LeftBrace, "{", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::LeftBrace, "{", startLine, startCol));
 
       break;
     }
 
     case '}': {
       advance();
-      _tokens.push_back(Token{TokenType::RightBrace, "}", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::RightBrace, "}", startLine, startCol));
 
       break;
     }
 
     case ':': {
       advance();
-      _tokens.push_back(Token{TokenType::Colon, ":", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Colon, ":", startLine, startCol));
 
       break;
     }
 
     case ';': {
       advance();
-      _tokens.push_back(Token{TokenType::Semicolon, ";", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Semicolon, ";", startLine, startCol));
 
       break;
     }
 
     case ',': {
       advance();
-      _tokens.push_back(Token{TokenType::Comma, ",", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Comma, ",", startLine, startCol));
 
       break;
     }
 
     case '+': {
       advance();
-      _tokens.push_back(Token{TokenType::Plus, "+", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Plus, "+", startLine, startCol));
 
       break;
     }
 
     case '*': {
       advance();
-      _tokens.push_back(Token{TokenType::Star, "*", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Star, "*", startLine, startCol));
 
       break;
     }
 
     case '/': {
       advance();
-      _tokens.push_back(Token{TokenType::Slash, "/", startLine, startCol});
+      _tokens.push_back(simple_token(TokenType::Slash, "/", startLine, startCol));
 
       break;
     }
@@ -241,7 +241,7 @@ void Lexer::scan_string() {
   const std::string_view lexeme = _text.substr(start, _pos - start);
 
   advance();
-  _tokens.push_back(Token{TokenType::String, lexeme, startLine, startCol});
+  _tokens.push_back(simple_token(TokenType::String, lexeme, startLine, startCol));
 }
 
 void Lexer::scan_digit() {
@@ -254,7 +254,8 @@ void Lexer::scan_digit() {
   }
 
   const std::string_view lexeme = _text.substr(start, _pos - start);
-  _tokens.push_back(Token{TokenType::Number, lexeme, startLine, startCol});
+
+  _tokens.push_back(simple_token(TokenType::Number, lexeme, startLine, startCol));
 }
 
 void Lexer::scan_identifier() {
@@ -275,7 +276,7 @@ void Lexer::scan_identifier() {
     type = TokenType::Return;
   }
 
-  _tokens.push_back(Token{type, lexeme, startLine, startCol});
+  _tokens.push_back(simple_token(type, lexeme, startLine, startCol));
 }
 
 } // namespace tlc::core::lex

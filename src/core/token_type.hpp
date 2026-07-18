@@ -18,12 +18,13 @@
 
 #pragma once
 
+#include <cstdint>
 #include <format>
 #include <string_view>
 
 namespace tlc::core {
 
-enum class TokenType {
+enum class TokenType : std::uint8_t {
   Function,
   Return,
 

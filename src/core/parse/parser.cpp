@@ -22,8 +22,6 @@
 #include <cstdint>
 #include <format>
 #include <memory>
-#include <optional>
-#include <print>
 #include <system_error>
 #include <utility>
 #include <vector>
@@ -114,7 +112,10 @@ ast::statements::StatementPointer Parser::parse_statement() {
     return std::make_unique<ast::statements::Statement>(
       ast::statements::ExpressionStatement{
         .expression = std::make_unique<ast::expressions::Expression>(
-          ast::expressions::CallExpression{std::move(callee), std::move(args)}
+          ast::expressions::CallExpression{
+            .callee = std::move(callee),
+            .args = std::move(args)
+          }
         )
       }
     );
@@ -131,10 +132,10 @@ ast::expressions::ExpressionPointer Parser::parse_expression(std::int32_t minBin
     const auto lexeme = operatorToken.lexeme;
 
     BinaryExpressionOperation operation;
-    if (lexeme == "+") operation = BinaryExpressionOperation::Addition;
-    else if (lexeme == "-") operation = BinaryExpressionOperation::Subtraction;
-    else if (lexeme == "*") operation = BinaryExpressionOperation::Multiplication;
-    else if (lexeme == "/") operation = BinaryExpressionOperation::Division;
+    if (lexeme == "+") { operation = BinaryExpressionOperation::Addition; }
+    else if (lexeme == "-") { operation = BinaryExpressionOperation::Subtraction; }
+    else if (lexeme == "*") { operation = BinaryExpressionOperation::Multiplication; }
+    else if (lexeme == "/") { operation = BinaryExpressionOperation::Division; }
     else {
       throw parse_exception{std::format("invalid operator {}", operatorToken.lexeme), operatorToken.line, operatorToken.column};
     }

@@ -31,4 +31,13 @@ struct Token {
   int line, column;
 };
 
+inline Token simple_token(TokenType type, const std::string_view lexeme, int line, int column) {
+  return Token{
+    .type = type,
+    .lexeme = lexeme,
+    .line = line,
+    .column = column,
+  };
+}
+
 } // namespace tlc::core

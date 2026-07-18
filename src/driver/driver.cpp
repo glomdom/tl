@@ -3,6 +3,9 @@
 #include <fstream>
 #include <functional>
 #include <sstream>
+#include <print>
+#include <ios>
+#include <utility>
 
 #include "core/lex/lexer.hpp"
 #include "core/parse/parser.hpp"
@@ -29,7 +32,7 @@ bool Driver::run() {
 }
 
 void Driver::read_source() {
-  std::ifstream in(_options.inputFile, std::ios::binary);
+  const std::ifstream in(_options.inputFile, std::ios::binary);
   if (!in) {
     _diagnostics.error("I/O error", 0, 0);
 

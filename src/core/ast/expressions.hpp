@@ -46,7 +46,7 @@ struct IdentifierExpression {
   std::string name;
 };
 
-enum class BinaryExpressionOperation {
+enum class BinaryExpressionOperation : std::uint8_t {
   Addition,
   Subtraction,
   Multiplication,

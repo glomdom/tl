@@ -1,7 +1,8 @@
 ﻿#include "diagnostics.hpp"
 
-#include <algorithm>
 #include <print>
+#include <string>
+#include <utility>
 
 #include "diagnostic.hpp"
 
@@ -17,7 +18,9 @@ bool Diagnostics::has_error() const {
   bool hasError = false;
 
   for (const auto& diag : _diagnostics) {
-    if (diag.severity == Severity::ERROR) hasError = true;
+    if (diag.severity == Severity::ERROR) {
+      hasError = true;
+    }
   }
 
   return hasError;

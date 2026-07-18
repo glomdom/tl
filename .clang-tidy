@@ -1,1 +1,29 @@
-﻿Checks: 'misc-include-cleaner'
+﻿Checks: >
+  misc-include-cleaner,
+  misc-const-correctness,
+  misc-use-internal-linkage,
+  misc-unused-parameters,
+  misc-redundant-expression,
+
+  readability-*,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-redundant-access-specifiers,
+  -readability-function-cognitive-complexity,
+  -readability-named-parameter,
+  -readability-avoid-const-params-in-decls,
+
+  performance-*,
+
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
+
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  -bugprone-exception-escape,
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
