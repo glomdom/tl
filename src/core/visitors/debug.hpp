@@ -28,7 +28,7 @@
 #include "core/ast/expressions.hpp"
 #include "core/ast/statements.hpp"
 #include "core/ast/types.hpp"
-#include "core/semantics/resolving/types.hpp"
+#include "core/semantics/resolving/functions.hpp"
 #include "util/overloaded.hpp"
 
 using namespace tlc::core;
@@ -40,8 +40,6 @@ inline std::string visit_type(const ast::types::Type& type, const std::size_t de
 
   return std::visit(overloaded{
     [=](const ast::types::NamedType& nt) -> std::string {
-      std::println("Resolved type: {}", semantics::resolving::resolve_type(nt));
-
       return std::format("{}NamedType {}", padding, nt.name);
     }
   }, type);
@@ -87,6 +85,16 @@ inline std::string visit_statement(const ast::statements::Statement& stmt, const
 
 inline std::string visit_function_declaration(const ast::declarations::FunctionDeclaration& fn, const std::size_t depth) {
   const auto padding = std::string(depth * 2, ' ');
+
+  auto resolved = semantics::resolving::resolve_function(fn);
+  std::string resParams = resolved.parameters
+    | std::views::transform([=](const semantics::ValueSymbol& p) {
+      return std::format("{} : {}", p.name, p.type);
+    })
+    | std::views::join_with(std::string{"\n"})
+    | std::ranges::to<std::string>();
+
+  std::println("{}\n{}", resolved.name, resParams);
 
   std::string params = fn.parameters
     | std::views::transform([=](const ast::declarations::Parameter& p) {

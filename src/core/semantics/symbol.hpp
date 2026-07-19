@@ -21,11 +21,13 @@
 #include <variant>
 #include <string>
 #include <vector>
+#include "core/semantics/type.hpp"
 
 namespace tlc::core::semantics {
 
 struct ValueSymbol {
   std::string name;
+  semantics::Type type;
 };
 
 struct FunctionSymbol {
