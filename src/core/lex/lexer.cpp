@@ -21,8 +21,8 @@
 #include <cstddef>
 #include <vector>
 
-#include "core/token.hpp"
-#include "core/token_type.hpp"
+#include "token.hpp"
+#include "token_type.hpp"
 
 namespace {
 

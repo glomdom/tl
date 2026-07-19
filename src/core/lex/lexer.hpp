@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/token.hpp"
+#include "token.hpp"
 
 #include <string_view>
 #include <vector>

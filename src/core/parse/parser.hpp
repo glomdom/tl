@@ -19,11 +19,10 @@
 
 #pragma once
 
-#include <print>
 #include <unordered_map>
 
 #include "error.hpp"
-#include "core/token.hpp"
+#include "core/lex/token.hpp"
 #include "core/ast/declarations.hpp"
 #include "core/diagnostics/diagnostics.hpp"
 
@@ -31,21 +30,21 @@ namespace tlc::core::parse {
 
 class Parser {
 public:
-  explicit Parser(std::vector<Token>&& tokens, diagnostics::Diagnostics& diagnostics) : _diagnostics{diagnostics}, _tokens{std::move(tokens)} {}
+  explicit Parser(std::vector<lex::Token>&& tokens, diagnostics::Diagnostics& diagnostics) : _diagnostics{diagnostics}, _tokens{std::move(tokens)} {}
 
   std::vector<ast::declarations::Declaration> parse();
 
 private:
-  [[nodiscard]] const Token& peek() const { return _tokens[_pos]; }
-  [[nodiscard]] const Token& peek_next() const { return _tokens[_pos + 1]; }
-  const Token& advance() { return _tokens[_pos++]; }
+  [[nodiscard]] const lex::Token& peek() const { return _tokens[_pos]; }
+  [[nodiscard]] const lex::Token& peek_next() const { return _tokens[_pos + 1]; }
+  const lex::Token& advance() { return _tokens[_pos++]; }
 
-  [[nodiscard]] bool at_end() const { return check(TokenType::EndOfFile); }
-  [[nodiscard]] bool check(const TokenType t) const { return peek().type == t; }
-  [[nodiscard]] bool check_next(const TokenType t) const { return peek_next().type == t; }
-  [[nodiscard]] bool check_operator() const { return check(TokenType::Plus) || check(TokenType::Minus) || check(TokenType::Slash) || check(TokenType::Star); }
+  [[nodiscard]] bool at_end() const { return check(lex::TokenType::EndOfFile); }
+  [[nodiscard]] bool check(const lex::TokenType t) const { return peek().type == t; }
+  [[nodiscard]] bool check_next(const lex::TokenType t) const { return peek_next().type == t; }
+  [[nodiscard]] bool check_operator() const { return check(lex::TokenType::Plus) || check(lex::TokenType::Minus) || check(lex::TokenType::Slash) || check(lex::TokenType::Star); }
 
-  [[nodiscard]] bool match(const TokenType t) {
+  [[nodiscard]] bool match(const lex::TokenType t) {
     if (check(t)) {
       advance();
 
@@ -55,7 +54,7 @@ private:
     return false;
   }
 
-  Token expect(const TokenType t) {
+  lex::Token expect(const lex::TokenType t) {
     if (check(t)) {
       return advance();
     }
@@ -75,7 +74,7 @@ private:
 private:
   diagnostics::Diagnostics& _diagnostics;
 
-  std::vector<Token> _tokens;
+  std::vector<lex::Token> _tokens;
   std::size_t _pos{};
 
   std::unordered_map<BinaryExpressionOperation, std::int32_t> _bindingPowers = {

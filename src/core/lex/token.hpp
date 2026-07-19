@@ -1,4 +1,4 @@
-﻿/**
+/**
   * tl - riscv64-first toy language
   * Copyright (C) 2026  glomdom
 
@@ -18,33 +18,26 @@
 
 #pragma once
 
-#include <vector>
+#include "token_type.hpp"
 
-#include "options.hpp"
-#include "core/lex/token.hpp"
-#include "core/ast/declarations.hpp"
-#include "core/diagnostics/diagnostics.hpp"
+#include <string_view>
 
-namespace tlc::driver {
+namespace tlc::core::lex {
 
-class Driver {
-public:
-  explicit Driver(Options&& options) : _options{std::move(options)} {}
+struct Token {
+  TokenType type;
+  std::string_view lexeme;
 
-  bool run();
-
-private:
-  void read_source();
-  void lex();
-  void parse();
-
-private:
-  Options _options;
-  core::diagnostics::Diagnostics _diagnostics;
-
-  std::string _source;
-  std::vector<core::lex::Token> _tokens;
-  std::vector<core::ast::declarations::Declaration> _ast;
+  int line, column;
 };
 
-} // namespace tlc::driver
+inline Token simple_token(TokenType type, const std::string_view lexeme, int line, int column) {
+  return Token{
+    .type = type,
+    .lexeme = lexeme,
+    .line = line,
+    .column = column,
+  };
+}
+
+} // namespace tlc::core

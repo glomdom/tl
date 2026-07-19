@@ -26,11 +26,11 @@
 #include <utility>
 #include <vector>
 
-#include "core/token_type.hpp"
 #include "core/ast/declarations.hpp"
 #include "core/ast/expressions.hpp"
 #include "core/ast/statements.hpp"
 #include "core/ast/types.hpp"
+#include "core/lex/token_type.hpp"
 #include "core/parse/error.hpp"
 
 namespace tlc::core::parse {
@@ -38,9 +38,9 @@ namespace tlc::core::parse {
 std::vector<ast::declarations::Declaration> Parser::parse() {
   std::vector<ast::declarations::Declaration> declarations{};
 
-  while (!check(TokenType::EndOfFile)) {
+  while (!check(lex::TokenType::EndOfFile)) {
     try {
-      if (check(TokenType::Function)) {
+      if (check(lex::TokenType::Function)) {
         declarations.emplace_back(parse_function_declaration());
       } else {
         const auto unhandled = advance();
@@ -57,16 +57,16 @@ std::vector<ast::declarations::Declaration> Parser::parse() {
 }
 
 ast::declarations::FunctionDeclaration Parser::parse_function_declaration() {
-  expect(TokenType::Function);
+  expect(lex::TokenType::Function);
 
-  const auto name = expect(TokenType::Identifier);
-  expect(TokenType::LeftParenthesis);
+  const auto name = expect(lex::TokenType::Identifier);
+  expect(lex::TokenType::LeftParenthesis);
 
   auto parameters = parse_parameter_list();
-  expect(TokenType::RightParenthesis);
-  expect(TokenType::RightArrow);
+  expect(lex::TokenType::RightParenthesis);
+  expect(lex::TokenType::RightArrow);
 
-  const auto returnType = expect(TokenType::Identifier);
+  const auto returnType = expect(lex::TokenType::Identifier);
   auto body = parse_block();
 
   return ast::declarations::FunctionDeclaration{
@@ -78,17 +78,17 @@ ast::declarations::FunctionDeclaration Parser::parse_function_declaration() {
 }
 
 ast::statements::StatementPointer Parser::parse_statement() {
-  if (match(TokenType::Return)) {
+  if (match(lex::TokenType::Return)) {
     auto returnExpression = parse_expression();
 
-    expect(TokenType::Semicolon);
+    expect(lex::TokenType::Semicolon);
 
     return std::make_unique<ast::statements::Statement>(ast::statements::ReturnStatement{std::move(returnExpression)});
   }
 
-  if (check(TokenType::Identifier) && check_next(TokenType::LeftParenthesis)) {
+  if (check(lex::TokenType::Identifier) && check_next(lex::TokenType::LeftParenthesis)) {
     const auto calleeName = advance();
-    expect(TokenType::LeftParenthesis);
+    expect(lex::TokenType::LeftParenthesis);
 
     auto callee = std::make_unique<ast::expressions::Expression>(
       ast::expressions::IdentifierExpression{std::string{calleeName.lexeme}}
@@ -96,18 +96,18 @@ ast::statements::StatementPointer Parser::parse_statement() {
 
     std::vector<ast::expressions::ExpressionPointer> args{};
 
-    while (!check(TokenType::RightParenthesis)) {
+    while (!check(lex::TokenType::RightParenthesis)) {
       args.emplace_back(parse_expression());
 
-      if (check(TokenType::Comma)) {
+      if (check(lex::TokenType::Comma)) {
         continue;
       }
 
       break;
     }
 
-    expect(TokenType::RightParenthesis);
-    expect(TokenType::Semicolon);
+    expect(lex::TokenType::RightParenthesis);
+    expect(lex::TokenType::Semicolon);
 
     return std::make_unique<ast::statements::Statement>(
       ast::statements::ExpressionStatement{
@@ -159,7 +159,7 @@ ast::expressions::ExpressionPointer Parser::parse_expression(std::int32_t minBin
 }
 
 ast::expressions::ExpressionPointer Parser::parse_primary() {
-  if (check(TokenType::Identifier)) {
+  if (check(lex::TokenType::Identifier)) {
     const auto token = advance();
 
     return std::make_unique<ast::expressions::Expression>(
@@ -167,7 +167,7 @@ ast::expressions::ExpressionPointer Parser::parse_primary() {
     );
   }
 
-  if (check(TokenType::Number)) {
+  if (check(lex::TokenType::Number)) {
     const auto token = advance();
 
     std::uint64_t val;
@@ -181,7 +181,7 @@ ast::expressions::ExpressionPointer Parser::parse_primary() {
     );
   }
 
-  if (check(TokenType::String)) {
+  if (check(lex::TokenType::String)) {
     const auto value = advance().lexeme;
 
     return std::make_unique<ast::expressions::Expression>(
@@ -195,21 +195,21 @@ ast::expressions::ExpressionPointer Parser::parse_primary() {
 ast::declarations::Block Parser::parse_block() {
   std::vector<ast::statements::StatementPointer> statements{};
 
-  expect(TokenType::LeftBrace);
+  expect(lex::TokenType::LeftBrace);
 
-  while (!check(TokenType::RightBrace)) {
+  while (!check(lex::TokenType::RightBrace)) {
     statements.emplace_back(parse_statement());
   }
 
-  expect(TokenType::RightBrace);
+  expect(lex::TokenType::RightBrace);
 
   return ast::declarations::Block{std::move(statements)};
 }
 
 ast::declarations::Parameter Parser::parse_parameter() {
-  const auto name = expect(TokenType::Identifier);
-  expect(TokenType::Colon);
-  const auto type = expect(TokenType::Identifier);
+  const auto name = expect(lex::TokenType::Identifier);
+  expect(lex::TokenType::Colon);
+  const auto type = expect(lex::TokenType::Identifier);
 
   return ast::declarations::Parameter{
     .name = std::string{name.lexeme},
@@ -223,7 +223,7 @@ ast::declarations::Parameter Parser::parse_parameter() {
 std::vector<ast::declarations::Parameter> Parser::parse_parameter_list() {
   std::vector<ast::declarations::Parameter> parameters{};
 
-  while (!check(TokenType::RightParenthesis)) {
+  while (!check(lex::TokenType::RightParenthesis)) {
     parameters.emplace_back(parse_parameter());
   }
 
