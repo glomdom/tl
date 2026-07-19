@@ -19,7 +19,7 @@
 #pragma once
 
 #include <format>
-#include <fstream>
+#include <print>
 #include <ranges>
 #include <string>
 #include <variant>
@@ -28,17 +28,21 @@
 #include "core/ast/expressions.hpp"
 #include "core/ast/statements.hpp"
 #include "core/ast/types.hpp"
-#include "core/lex/lexer.hpp"
+#include "core/semantics/resolving/types.hpp"
 #include "util/overloaded.hpp"
 
 using namespace tlc::core;
 
 namespace tlc::core::visitors::debug {
 
-inline std::string visit_type(const ast::types::Type& type) {
+inline std::string visit_type(const ast::types::Type& type, const std::size_t depth) {
+  const auto padding = std::string(depth * 2, ' ');
+
   return std::visit(overloaded{
     [=](const ast::types::NamedType& nt) -> std::string {
-      return nt.name;
+      std::println("Resolved type: {}", semantics::resolving::resolve_type(nt));
+
+      return std::format("{}NamedType {}", padding, nt.name);
     }
   }, type);
 }
@@ -86,7 +90,7 @@ inline std::string visit_function_declaration(const ast::declarations::FunctionD
 
   std::string params = fn.parameters
     | std::views::transform([=](const ast::declarations::Parameter& p) {
-      return std::format("  {}Parameter {}", padding, p.name);
+      return std::format("  {}Parameter {}\n    {}", padding, p.name, visit_type(*p.type, depth));
     })
     | std::views::join_with(std::string{"\n"})
     | std::ranges::to<std::string>();
@@ -98,7 +102,7 @@ inline std::string visit_function_declaration(const ast::declarations::FunctionD
     | std::views::join_with(std::string{"\n"})
     | std::ranges::to<std::string>();
 
-  std::string result = std::format("{0}Function {1}\n{0}{2}\n{0}{3}", padding, fn.name, params, statements);
+  std::string result = std::format("{0}Function {1}\n{0}{2}\n{0}{3}\n{0}{4}", padding, fn.name, params, visit_type(*fn.returnType, depth + 1), statements);
 
   return result;
 }

@@ -33,6 +33,7 @@ target_sources(tlc_core PRIVATE
   src/core/diagnostics/diagnostics.cpp
   src/core/lex/lexer.cpp
   src/core/parse/parser.cpp
+  src/core/semantics/resolving/types.cpp
 
   src/driver/driver.cpp
 )
